@@ -1,0 +1,673 @@
+# Utilising Pandas library for the below code work.
+import pandas as pd
+# Utilising CSV library for reading the Car Registry File.
+import csv
+
+# This is the Data Frame and it is reading the Car Registry data file and printing the list from it.
+df = pd.read_csv('CarReg.txt')
+#df.index.name = 'POS'
+#print(df.columns[0]) #= "0"
+
+print(df.to_string())
+
+
+# This is the Main Menu defined with the options.
+def display_menu():
+    print("\nMenu:")
+    print("A - Add Car to Car Registry")
+    print("D - Delete Car from Car Registry")
+    print("H - Hire Out")
+    print("R - Return to Garage")
+    print("U - Update Car Registry\n")
+    print("X - Exit\n")
+
+    # These are the user input categories as shown in the Display Menu section above. This includes the
+    process_option = input("Please select an option ").lower()
+    while process_option != 'a' and process_option != 'd' and process_option != 'h' and process_option != 'r' \
+            and process_option != 'U' and process_option != 'X':
+        print("Please select the correct option")
+    if process_option == 'a':
+        add_car()
+    elif process_option == 'D':
+        remove_car()
+    # elif process_option == 'H':
+    # hire_out()
+    elif process_option == 'R':
+        return_car_to_garage()
+    elif process_option == 'U':
+        update_registry()
+    elif process_option == 'X':
+        exit()
+
+def remove_car():
+    carRecord = load_carRecord()
+
+    #POS = input("Please Enter Your Car POS : ")
+   # carRecord=pd.DataFrame(carRecord)
+    myList = []
+    with open('CarReg.txt', 'r') as file:
+        myFile = csv.reader(file)
+        POS = input("Please Enter Your Car POS : ")
+        cancel_process = False
+        for row in myFile:
+            if row[0] == POS:
+                cancel_process = True
+            else:
+                myList.append(row)
+        file.close()
+
+        if cancel_process == False:
+            print("POS ID not vaild Please try again")
+        else:
+            car_Record = open('CarReg.txt', "a")
+            car_Record.write()
+            car_Record.close()
+        print(df.to_string())
+
+
+# carRecord = carRecord.drop(labels=POS, axis=0)
+
+def load_data():
+    r = csv.reader(open('CarReg.txt'))
+    lines = list(r)
+    return lines
+
+
+def return_car_to_garage():
+    pos_id = ""
+    car_id = ''
+    registration_plate1 = ''
+    manufacturer1 = ""
+    model_type1 = ""
+    sipp_code1 = ""
+    max_seat_capacity1 = ""
+    width1 = ""
+    length1 = ""
+    max_speed1 = ""
+    mpg1 = ""
+    row_num = 0
+    car_Return = ''
+    cancel_process = False
+
+    return_data = load_data()
+
+    for i in range(len(return_data)):
+        if i == 0:
+            print("\nPos car_id registration_plate manufacturer model_type sipp_code max_seat_capacity width length max_speed car_Return mpg")
+        else:
+            pos_id = return_data[i][0]
+            car_id = return_data[i][1]
+            registration_plate = return_data[i][2]
+            manufacturer = return_data[i][3]
+            model_type = return_data[i][4]
+            sipp_code = return_data[i][5]
+            max_seat_capacity = return_data[i][6]
+            width = return_data[i][7]
+            length = return_data[i][8]
+            max_speed = return_data[i][9]
+            mpg = return_data[i][10]
+
+            print(pos_id, '\t', car_id, '\t', registration_plate, '\t', manufacturer, '\t', model_type, sipp_code, '\t',
+                  max_seat_capacity, '\t', width, '\t', length, '\t', max_speed, '\t', car_Return, '\t', mpg)
+
+    position_id = input("Please enter the Position of the Car ")
+
+    return_data = load_data()
+
+    for i in range(len(return_data)):
+        if return_data[i][0] == position_id:
+            car_id = return_data[i][1]
+
+            registration_plate = return_data[i][2]
+            print(pos_id, '\t', car_id, '\t', registration_plate)
+
+    print("Enter X to cancel ")
+
+    position_id = input("Please enter the Position of the Car ")
+
+    for i in range(len(return_data)):
+        car_Return = return_data[i][0]
+        if return_data[i][0] == position_id and car_Return == 'Y':
+            print("Apologies, the car registered {0} is already in the garage".format(position_id))
+            cancel_process = True
+
+
+    if position_id.upper()!='X' and not cancel_process:
+        cancel_process = False
+        print("Car ID: {0} Registration Plate: {1}\n".format(car_id, registration_plate))
+
+        car_id = return_data[i][0]
+        registration_plate = return_data[i][1]
+
+        for i in range(len(return_data)):
+            if return_data[i][0] == position_id:
+                if return_data[i][1] == 'Y':
+                    row_num = i
+
+                    car_id = return_data[i][0]
+                    registration_plate = return_data[i][1]
+                    print("Car ID: {0} Registration Plate: {1}\n".format(car_id, registration_plate))
+                else:
+                    cancel_process = True
+                    print("{0} has successfully Returned to the Garage ".format(registration_plate))
+
+
+# This is defining with the options.
+def load_carRecord():
+    r = csv.reader(open('CarReg.txt'))
+    lines = list(r)
+    return lines
+    # print(df.head())
+    # myr = pd.read_csv('CarReg.txt', header=0)
+    # print(myrshape[1])
+
+    #print(myr.to_string())
+
+# This is specifically defining and checking the Registration Plate.
+def check_registration_plate(cardata, number_plate):
+    registration_exit = False
+
+    for i in range(len(cardata)):
+        car_id = cardata[i][0]
+
+        if cardata[i][3] == number_plate:
+            registration_exit = True
+
+    return registration_exit, car_id
+
+
+# This is where Add Car to Car Registry is defined from the Main Menu above, as a User Input.
+def add_car():
+    registration_plate_exit = False
+
+    index = 0
+    registration_plate = input("Please Enter Your Car Registration Number: ")
+    manufacturer = input("Please Enter Your Car Manufacturer: ")
+    model_type = input("Please Enter Your Car Model: ")
+    sipp_code = input("Please Enter Your Car SIPP Code: ")
+    max_seat_capacity = int(input("Please Enter Your Car Seat: "))
+    width = int(input("Please Enter Your Car Width: "))
+    length = int(input("Please Enter Your Car Length: "))
+    max_speed = int(input("Please Enter Your Car Speed: "))
+    mpg = int(input("Please Enter the Car MPG: "))
+
+    carRecord = load_carRecord()
+
+    if registration_plate != "":
+        registration_plate = registration_plate.upper()
+        check_registration_plate_Record = check_registration_plate(carRecord, registration_plate)
+
+        registration_plate_exit = check_registration_plate_Record[0]
+        last_pos = check_registration_plate_Record[1]
+
+        if registration_plate_exit:
+            print("The input is invalid")
+
+    if not registration_plate_exit:
+        print()
+        if len(registration_plate) > 7:
+            print("")
+            index += 1
+        if not registration_plate:
+            print("Please enter valid Registration Number ")
+            index += 1
+
+        if not manufacturer:
+            print("Please confirm your Car Manufacturer ")
+            index += 1
+
+        if not model_type:
+            print("Please enter valid Model Type ")
+            index += 1
+
+        if not sipp_code:
+            print("Please enter valid SIPP Code ")
+            index += 1
+
+        if not max_seat_capacity:
+            print("Please enter Max Seat Capacity ")
+            index += 1
+
+        if not width:
+            print("Please enter the Car Width ")
+            index += 1
+
+        if not length:
+            print("Please enter the Car Length ")
+            index += 1
+
+        if not max_speed:
+            print("Please enter the Car's Max Speed ")
+            index += 1
+
+        if not mpg:
+            print("Please enter the Car's MPG ")
+            index += 1
+
+        if index != 0:
+            print("Please try again ")
+            display_menu()
+        else:
+            print("Please confirm the Data below \n")
+            print("Registration Plate: {0}".format(registration_plate.upper()))
+            print("Manufacturer: {0}".format(manufacturer.upper()))
+            print("Model Type: {0}".format(model_type.upper()))
+            print("SIPP Code: {0}".format(sipp_code.upper()))
+            print("Max Seat Capacity: {0}".format(max_seat_capacity))
+            print("Width: {0}".format(width))
+            print("Length: {0}".format(length))
+            print("Max Speed: {0}".format(max_speed))
+            print("MPG: {0}".format(mpg))
+
+            save_yn = input("\nAre you sure you want to save the record? (Y/N) ")
+            if save_yn.upper() == "Y":
+                last_pos = int(last_pos) + 1
+                last_pos = str(last_pos)
+                car_Record = open('CarReg.txt', "a")
+                car_Record.write("\n" + str(
+                    last_pos) + "," + str(registration_plate).upper() + "," + str(manufacturer).upper() + "," + str(model_type).upper() + "," +
+                                 "," + str(sipp_code).upper() + "," + str(max_seat_capacity) + "," + str(width) + "," + str(length) + "," + str(max_speed) + "," + str(mpg))
+                car_Record.close()
+                print("\nThe Car was Successfully Added")
+                print(df.to_string())
+                display_menu()
+            else:
+                print("Car was not Successfully Added")
+                display_menu()
+
+
+# This is where Return to Garage to Car Registry file is defined from the Main Menu above, as a User Input.
+def update_registry():
+    registration_plate2 = ''
+    manufacturer2 = ''
+    model_type2 = ''
+    sipp_code2 = ''
+    max_seat_capacity2 = ''
+    width2 = ''
+    length2 = ''
+    max_speed2 = ''
+    mpg2 = ''
+    carRecord_str = ''
+    data_row_num = 0
+    car_Return = ''
+    save_yn = 'N'
+
+    carRecord = load_carRecord()
+
+
+    print('car_id registration_plate manufacturer model_type sipp_code max_seat_capacity width length max_speed car_Return mpg')
+    for i in range(len(carRecord)):
+        car_id = carRecord[i][0]
+        registration_plate = carRecord[i][1]
+        manufacturer = carRecord[i][2]
+        model_type = carRecord[i][3]
+        sipp_code = carRecord[i][4]
+        max_seat_capacity = carRecord[i][5]
+        width = carRecord[i][6]
+        length = carRecord[i][7]
+        max_speed = carRecord[i][8]
+        mpg = carRecord[i][9]
+
+        car_Return = carRecord[i][10]
+
+        if i != 0:
+            print(car_id, '\t', registration_plate, '\t', manufacturer, '\t', model_type, sipp_code, '\t',
+                  max_seat_capacity, '\t', width, '\t', length, '\t', max_speed, '\t', car_Return, '\t', mpg)
+
+    car_id = input("\nPlease enter your Car ID ")
+
+    for i in range(len(carRecord)):
+        if carRecord[i][0] == car_id:
+            data_row_num = i
+            registration_plate = carRecord[i][1]
+            manufacturer = carRecord[i][2]
+            model_type = carRecord[i][3]
+            sipp_code = carRecord[i][4]
+            max_seat_capacity = carRecord[i][5]
+            width = carRecord[i][6]
+            length = carRecord[i][7]
+            max_speed = carRecord[i][8]
+            mpg = carRecord[i][9]
+
+            car_Return = carRecord[i][10]
+
+            print("Car ID: {0}".format(car_id))
+            print("Registration Plate: {0}".format(registration_plate))
+            registration_plate2 = input("Please enter the Registration Plate ")
+            print("Manufacturer: {0}".format(manufacturer))
+            manufacturer2 = input("Please enter the Manufacturer ")
+
+            print("Model Type: {0}".format(model_type))
+            model_type2 = input("Please enter the Model Type ")
+            print("SIPP Code: {0}".format(sipp_code))
+            sipp_code2 = input("Please enter the SIPP Code ")
+            print("Max Seat Capacity: {0}".format(max_seat_capacity))
+            max_seat_capacity2 = input("Please enter the Max Seat Capacity ")
+
+            print("Width: {0}".format(width))
+            width2 = input("Please enter the Width ")
+            print("Length: {0}".format(length))
+            length2 = input("Please enter the Length ")
+            print("Max Speed: {0}".format(max_speed))
+            max_speed2 = input("Please enter the Max Speed Capacity ")
+            print("MPG: {0}".format(mpg))
+            mpg2 = input("Please enter the MPG ")
+
+            if registration_plate2 != "":
+                registration_plate = registration_plate2.upper()
+            if manufacturer2 != "":
+                manufacturer = manufacturer2.upper()
+            if model_type2 != "":
+                model_type = model_type2.upper()
+
+            if sipp_code2 != "":
+                sipp_code = sipp_code2.upper()
+            if max_seat_capacity2 != "":
+                max_seat_capacity = max_seat_capacity2.upper()
+            if width2 != "":
+                width = width2.upper()
+
+            if length2 != "":
+                length = length2.upper()
+            if max_speed2 != "":
+                max_speed = max_speed2.upper()
+            if mpg2 != "":
+                mpg = mpg2.upper()
+
+            print("\nPlease confirm the Details below\n")
+
+            print("Car ID: {0}".format(car_id))
+            print("Registration Plate: {0}".format(registration_plate))
+            print("Manufacturer: {0}".format(manufacturer))
+
+            print("Model Type: {0}".format(model_type))
+            print("SIPP Code: {0}".format(sipp_code))
+            print("Max Seat Capacity: {0}".format(max_seat_capacity))
+
+            print("Width: {0}".format(width))
+            print("Length: {0}".format(length))
+            print("Max Speed: {0}".format(max_speed))
+            print("MPG: {0}".format(mpg))
+
+    save_yn = input("\nAre you sure you want to save the record? (Y/N) ")
+
+    if save_yn.upper() == "Y":
+
+        carRecord[data_row_num][1] = registration_plate
+        carRecord[data_row_num][2] = manufacturer
+        carRecord[data_row_num][3] = model_type
+
+        carRecord[data_row_num][4] = sipp_code
+        carRecord[data_row_num][5] = max_seat_capacity
+        carRecord[data_row_num][6] = width
+
+        carRecord[data_row_num][7] = length
+        carRecord[data_row_num][8] = max_speed
+        carRecord[data_row_num][9] = mpg
+
+        carRecord[data_row_num][10] = car_Return
+
+        f = open('CarReg.txt', "w")
+
+        for i in range(len(carRecord)):
+            car_Record_str = str(carRecord[i])
+            car_Record_str = car_Record_str.replace('[', '')
+            car_Record_str = car_Record_str.replace(']', '')
+            car_Record_str = car_Record_str.replace("'", '')
+            car_Record_str = car_Record_str.replace("'", '')
+
+            if i == 0:
+                f.write(car_Record_str)
+                #print()
+            else:
+                f.write("\n" + car_Record_str)
+                #print()
+
+        f.close()
+        print("Data has been Updated\n")
+        #print(df.to_string())
+        carRecord2=pd.DataFrame(carRecord)
+        #print(df.columns)
+        carRecord2.columns = df.columns
+        print(carRecord2.to_string())
+        display_menu()
+    else:
+        print("Data has not been Saved")
+        display_menu()
+
+
+display_menu()
+
+
+
+'''
+    if car_id != "":
+        car_id = car_id.upper()
+        check_POS = check_POS(carRecord, car_id)
+
+        car_id_exit = car_id[0]
+        last_pos = car_id[1]
+
+        if car_id_exit:
+            print("The input is invalid")
+
+    if not car_id_exit:
+        print("The Car ID doesn't exist")
+        index = input("Enter index pwease ;) <3 : ")
+        if index == 0:
+            print("Please try again ")
+        else:
+            display_menu()
+
+    save_yn = input("\nAre you sure you want to save the record? (Y/N) ")
+
+    if save_yn.upper() == "Y":
+        last_pos = int(last_pos) - 1
+        last_pos = str(last_pos)
+        car_Record = open('CarReg.txt', "a")
+        car_Record.write("\n" + str(last_pos) + "," + str(registration_plate).upper() + "," + str(manufacturer).upper() + "," + str(model_type).upper() + "," +
+                                     "," + str(sipp_code).upper() + "," + str(max_seat_capacity) + "," + str(width) + "," + str(length) + "," + str(max_speed) + "," + str(mpg))
+                    car_Record.close()
+                    print(df.to_string())
+                    print("The Car was Successfully Added")
+                else:
+                    print("Car was not Successfully Added")
+
+
+# This is where Return to Garage to Car Registry file is defined from the Main Menu above, as a User Input.
+
+# def hire_out():
+
+# This is defining the Update Car Registry section and validating
+'''
+def update_registry():
+    registration_plate2 = ''
+    manufacturer2 = ''
+    model_type2 = ''
+    sipp_code2 = ''
+    max_seat_capacity2 = ''
+    width2 = ''
+    length2 = ''
+    max_speed2 = ''
+    mpg2 = ''
+    carRecord_str = ''
+    data_row_num = 0
+    car_Return = ''
+    save_yn = 'N'
+
+    carRecord = load_carRecord()
+
+    print(
+        'car_id registration_plate manufacturer model_type sipp_code max_seat_capacity width length max_speed car_Return mpg')
+    for i in range(len(carRecord)):
+        car_id = carRecord[i][1]
+        registration_plate = carRecord[i][2]
+        manufacturer = carRecord[i][3]
+        model_type = carRecord[i][4]
+        sipp_code = carRecord[i][5]
+        max_seat_capacity = carRecord[i][6]
+        width = carRecord[i][7]
+        length = carRecord[i][8]
+        max_speed = carRecord[i][9]
+        mpg = carRecord[i][10]
+
+        car_Return = carRecord[i][11]
+
+        if i != 0:
+            print(car_id, '\t', registration_plate, '\t', manufacturer, '\t', model_type, sipp_code, '\t',
+                  max_seat_capacity, '\t',
+                  width, '\t', length, '\t', max_speed, '\t', car_Return, '\t', mpg)
+
+    car_id = input("\nPlease enter your Car ID ")
+
+    for i in range(len(carRecord)):
+        if carRecord[i][0] == car_id:
+            data_row_num = i
+            registration_plate = carRecord[i][1]
+            manufacturer = carRecord[i][2]
+            model_type = carRecord[i][3]
+            sipp_code = carRecord[i][4]
+            max_seat_capacity = carRecord[i][5]
+            width = carRecord[i][6]
+            length = carRecord[i][7]
+            max_speed = carRecord[i][8]
+            mpg = carRecord[i][9]
+
+            car_Return = carRecord[i][10]
+
+            print("Car ID: {0}".format(car_id))
+            print("Registration Plate: {0}".format(registration_plate))
+            registration_plate2 = input("Please enter the Registration Plate ")
+            print("Manufacturer: {0}".format(manufacturer))
+            manufacturer2 = input("Please enter the Manufacturer ")
+
+            print("Model Type: {0}".format(model_type))
+            model_type2 = input("Please enter the Model Type ")
+            print("SIPP Code: {0}".format(sipp_code))
+            sipp_code2 = input("Please enter the SIPP Code ")
+            print("Max Seat Capacity: {0}".format(max_seat_capacity))
+            max_seat_capacity2 = input("Please enter the Max Seat Capacity ")
+
+            print("Width: {0}".format(width))
+            width2 = input("Please enter the Width ")
+            print("Length: {0}".format(length))
+            length2 = input("Please enter the Length ")
+            print("Max Speed: {0}".format(max_speed))
+            max_speed2 = input("Please enter the Max Speed Capacity ")
+            print("MPG: {0}".format(mpg))
+            mpg2 = input("Please enter the MPG ")
+
+            if registration_plate2 != "":
+                registration_plate = registration_plate2.upper()
+            if manufacturer2 != "":
+                manufacturer = manufacturer2.upper()
+            if model_type2 != "":
+                model_type = model_type2.upper()
+
+            if sipp_code2 != "":
+                sipp_code = sipp_code2.upper()
+            if max_seat_capacity2 != "":
+                max_seat_capacity = max_seat_capacity2.upper()
+            if width2 != "":
+                width = width2.upper()
+
+            if length2 != "":
+                length = length2.upper()
+            if max_speed2 != "":
+                max_speed = max_speed2.upper()
+            if mpg2 != "":
+                mpg = mpg2.upper()
+
+            print("Check Car Details are Correct? ")
+
+            print("Car ID: {0}".format(car_id))
+            print("Registration Plate: {0}".format(registration_plate))
+            print("Manufacturer: {0}".format(manufacturer))
+
+            print("Model Type: {0}".format(model_type))
+            print("SIPP Code: {0}".format(sipp_code))
+            print("Max Seat Capacity: {0}".format(max_seat_capacity))
+
+            print("Width: {0}".format(width))
+            print("Length: {0}".format(length))
+            print("Max Speed: {0}".format(max_speed))
+            print("MPG: {0}".format(mpg))
+
+            print("Is the Car Returned? (Y/N): {0}".format(car_Return))
+
+            save_yn = input("\nAre you sure you want to save the record? (Y/N) ")
+
+    if save_yn.upper() == "Y":
+
+        carRecord[data_row_num][1] = registration_plate
+        carRecord[data_row_num][2] = manufacturer
+        carRecord[data_row_num][3] = model_type
+
+        carRecord[data_row_num][4] = sipp_code
+        carRecord[data_row_num][5] = max_seat_capacity
+        carRecord[data_row_num][6] = width
+
+        carRecord[data_row_num][7] = length
+        carRecord[data_row_num][8] = max_speed
+        carRecord[data_row_num][9] = mpg
+
+        carRecord[data_row_num][10] = car_Return
+
+        f = open('CarReg.txt', "w")
+
+        for i in range(len(carRecord)):
+            carRecord_str = str(carRecord[i])
+            car_Record_str = car_Record_str.replace('[', '')
+            car_Record_str = car_Record_str.replace(']', '')
+            car_Record_str = car_Record_str.replace("'", '')
+            car_Record_str = car_Record_str.replace("'", '')
+
+            if i == 0:
+                f.write(car_Record_str)
+                print()
+            else:
+                f.write("\n" + car_Record_str)
+                print()
+
+        f.close()
+        print("Data has been Closed")
+    else:
+        print("Data has not been Saved")
+
+'''
+display_menu()
+
+
+for i in range(len(myRegistry)):
+    print("Pos" + str(i) + " : " + str(myRegistry[i]))
+
+addRow = int(input("\nWould like to add New data? Enter 1 - " + str(len(myRegistry) + 14) + ": "))
+for i in range(len(myRegistry[0])):
+    newEntry = input("Please enter your " + str(myRegistry[0][i]) + " : ")
+    myRegistry[addRow][i] = newEntry
+
+print("please see my new data:")
+for i in range(len(myRegistry)):
+    print("Row" + str(i) + " : " + str(myRegistry[i]))
+
+with open('CarReg.csv', 'r') as file:
+    myReg = csv.reader(file)
+    for row in myReg:
+        myRegistry.append(row)
+'''
+ #mydataframe[0:-1]
+ID ,     REG ,     Manufacturer ,     Model ,     SIPP,     SEAT ,     WIDTH,     LENGTH,     SPD,     MPG,     OnHire
+1,     WRETY3,     SKODA,     T-TYPE,     ERFD,     5,     300,     350,     250,     100,     TRUE
+2,     CA51 MBE,     CHEVROLET,     CORVETTE,     JTAV,     2,     1877,     1234,     194,     24,     TRUE
+3,     PC14 RSN,     FORD,     F-150,     PQBD,     5,     2121,     5890,     155,     20,     TRUE
+4,     MB19 ORE,     HONDA,     ACCORD,     FDAR,     5,     1849,     4933,     125,     47.3,     FALSE
+5,     BD68 NAP,     HONDA,     ACCORD,     FDAV,     5,     1849,     4933,     171,     37.7,     FALSE
+6,     LY51 BED,     Isuzu,     NQR,     OKAD,     3,     2065,     5220,     114,     11.9,     TRUE
+7,     LJ08 NOD,     HONDA,     CIVIC,     SDAR,     5,     1877,     4648,     125,     31,     TRUE
+8,     GK63 SLE,     FORD,     ESCAPE,     SDMR,     5,     1806,     4457,     209,     23,     TRUE
+9,     GW66 EPY,     FORD,     TAURUS,     FCAR,     5,     1935,     5154,     143,     20,     FALSE
+10,     YE02 FOU,     TOYOTA,     CELICA,     IDAR,     5,     1778,     2700,     140,     30,     FALSE
+11,     YN65 RTY,     CHRYSLER,     CHEROKEE,     PFBD,     5,     1900,     4730,     125.5,     36,     TRUE
+12,     WP64 WIN,     CHEVROLET,     SPARK,     ECMR,     5,     1495,     3495,     89,     33,     FALSE
+13,     RG69 KSD,     CHEVROLET,     CORVETTE,     JTAV,     2,     1877,     1234,     194,     24,     TRUE
+14, DGDFD, FFFSD, SFSDFS, SFS, 4, 34234, 3434, 343, 434,     FALSE
